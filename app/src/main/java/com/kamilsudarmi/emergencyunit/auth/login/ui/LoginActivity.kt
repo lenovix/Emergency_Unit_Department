@@ -11,6 +11,7 @@ import com.kamilsudarmi.emergencyunit.R
 import com.kamilsudarmi.emergencyunit.api.ApiClient
 import com.kamilsudarmi.emergencyunit.auth.login.model.LoginRequest
 import com.kamilsudarmi.emergencyunit.auth.login.model.LoginResponse
+import com.kamilsudarmi.emergencyunit.auth.regiter.RegisterActivity
 import com.kamilsudarmi.emergencyunit.databinding.ActivityLoginBinding
 import org.json.JSONException
 import org.json.JSONObject
@@ -28,6 +29,10 @@ class LoginActivity : AppCompatActivity() {
 
         binding.btnLogin.setOnClickListener {
             loginMethod()
+        }
+        binding.btnRegisterPage.setOnClickListener {
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -55,8 +60,10 @@ class LoginActivity : AppCompatActivity() {
                     val sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE)
                     val editor = sharedPreferences.edit()
                     editor.putBoolean("isLoggedIn", true)
-                    editor.putString("user_id", loginResponse?.user?.user_id)
-                    editor.putString("userName", loginResponse?.user?.name)
+                    editor.putString("user_id", loginResponse?.user?.id.toString())
+                    editor.putString("userName", loginResponse?.user?.username)
+                    editor.putString("fullName", loginResponse?.user?.full_name)
+                    editor.putString("departmentName", loginResponse?.user?.department_name)
                     editor.apply()
 
                     // Arahkan pengguna ke MainActivity atau tampilan utama lainnya

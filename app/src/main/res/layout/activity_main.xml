@@ -9,10 +9,26 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/fullNameTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Full Name"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+    <TextView
+        android:id="@+id/departmentNameTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Demartment Name"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+    <TextView
         android:id="@+id/titleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Daftar Panggilan"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
         android:textSize="24sp"
         android:textStyle="bold" />
 

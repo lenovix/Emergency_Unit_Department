@@ -1,5 +1,6 @@
-package com.kamilsudarmi.emergencyunit
+package com.kamilsudarmi.emergencyunit.adapter
 
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -7,14 +8,18 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.kamilsudarmi.emergencyunit.R
 import com.kamilsudarmi.emergencyunit.api.ApiClient
+import com.kamilsudarmi.emergencyunit.api.request.CallStatusRequest
+import com.kamilsudarmi.emergencyunit.api.response.CallStatusResponse
+import com.kamilsudarmi.emergencyunit.api.response.Panggilan
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class PanggilanAdapter : RecyclerView.Adapter<PanggilanAdapter.PanggilanViewHolder>() {
 
-    private val panggilanList: MutableList<PanggilanAmbulan> = mutableListOf()
+    private val panggilanList: MutableList<Panggilan> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PanggilanViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
@@ -30,13 +35,11 @@ class PanggilanAdapter : RecyclerView.Adapter<PanggilanAdapter.PanggilanViewHold
         // Set teks tombol tergantung dari status call
         if (panggilan.status == "Pending") {
             holder.acceptButton.setOnClickListener {
-                // Mengirim permintaan untuk mengubah status panggilan ke "accepted"
                 updateCallStatus(panggilan.report_id.toString(), "Handled")
             }
             holder.acceptButton.text = "Accept"
         } else if (panggilan.status == "Handled") {
             holder.acceptButton.setOnClickListener {
-                // Mengirim permintaan untuk mengubah status panggilan ke "accepted"
                 updateCallStatus(panggilan.report_id.toString(), "Completed")
             }
             holder.acceptButton.text = "Complete"
@@ -66,21 +69,20 @@ class PanggilanAdapter : RecyclerView.Adapter<PanggilanAdapter.PanggilanViewHold
         return panggilanList.size
     }
 
-    fun setData(data: List<PanggilanAmbulan>) {
+    fun setData(data: List<Panggilan>) {
         panggilanList.clear()
         panggilanList.addAll(data)
         notifyDataSetChanged()
     }
 
     inner class PanggilanViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
         private val nameTextView: TextView = itemView.findViewById(R.id.nameTextView)
         private val addressTextView: TextView = itemView.findViewById(R.id.addressTextView)
         private val situationTextView: TextView = itemView.findViewById(R.id.situationTextView)
         private val statusTextView: TextView = itemView.findViewById(R.id.statusTextView)
         val acceptButton: Button = itemView.findViewById(R.id.acceptButton)
 
-        fun bindData(panggilan: PanggilanAmbulan) {
+        fun bindData(panggilan: Panggilan) {
             nameTextView.text = "Name: ${panggilan.nama_pengguna}"
             addressTextView.text = "Address: ${panggilan.address}"
             situationTextView.text = "Situation: ${panggilan.situation}"

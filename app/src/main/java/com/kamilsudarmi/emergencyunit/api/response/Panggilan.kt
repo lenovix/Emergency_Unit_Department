@@ -1,6 +1,6 @@
-package com.kamilsudarmi.emergencyunit
+package com.kamilsudarmi.emergencyunit.api.response
 
-data class PanggilanAmbulan(
+data class Panggilan(
     val report_id: Int,
     val user_id: Int,
     val address: String,
