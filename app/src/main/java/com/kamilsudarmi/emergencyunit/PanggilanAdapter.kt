@@ -31,10 +31,10 @@ class PanggilanAdapter : RecyclerView.Adapter<PanggilanAdapter.PanggilanViewHold
         if (panggilan.status == "Pending") {
             holder.acceptButton.setOnClickListener {
                 // Mengirim permintaan untuk mengubah status panggilan ke "accepted"
-                updateCallStatus(panggilan.report_id.toString(), "Accepted")
+                updateCallStatus(panggilan.report_id.toString(), "Handled")
             }
             holder.acceptButton.text = "Accept"
-        } else if (panggilan.status == "Accepted") {
+        } else if (panggilan.status == "Handled") {
             holder.acceptButton.setOnClickListener {
                 // Mengirim permintaan untuk mengubah status panggilan ke "accepted"
                 updateCallStatus(panggilan.report_id.toString(), "Completed")

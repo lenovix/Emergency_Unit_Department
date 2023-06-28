@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.kamilsudarmi.emergencyunit.api.ApiClient
 import com.kamilsudarmi.emergencyunit.api.ApiService
 import com.kamilsudarmi.emergencyunit.auth.login.ui.LoginActivity
@@ -36,6 +37,33 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = panggilanAdapter
 
         fetchDataFromApi()
+
+        refreshApp()
+
+        binding.btnLogout.setOnClickListener {
+            logout()
+        }
+    }
+
+    private fun logout() {
+        // Hapus status login dari SharedPreferences
+        val sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("isLoggedIn", false)
+        editor.apply()
+
+        // Arahkan pengguna kembali ke LoginActivity
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish() // Optional: Tutup MainActivity agar pengguna tidak dapat kembali ke sini setelah logout
+    }
+
+    private fun refreshApp() {
+        val swipeToRefresh:SwipeRefreshLayout = findViewById(R.id.swipeToRefresh)
+        swipeToRefresh.setOnRefreshListener {
+            fetchDataFromApi()
+            swipeToRefresh.isRefreshing = false
+        }
     }
 
     private fun fetchDataFromApi() {
