@@ -2,15 +2,16 @@ package com.kamilsudarmi.emergencyunit
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.kamilsudarmi.emergencyunit.adapter.PanggilanAdapter
 import com.kamilsudarmi.emergencyunit.api.ApiClient
-import com.kamilsudarmi.emergencyunit.api.ApiService
+import com.kamilsudarmi.emergencyunit.api.response.Panggilan
 import com.kamilsudarmi.emergencyunit.auth.login.ui.LoginActivity
 import com.kamilsudarmi.emergencyunit.databinding.ActivityMainBinding
 import retrofit2.Call
@@ -36,6 +37,12 @@ class MainActivity : AppCompatActivity() {
         panggilanAdapter = PanggilanAdapter()
         recyclerView.adapter = panggilanAdapter
 
+        val sharedPreferences: SharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE)
+        val fullName = sharedPreferences.getString("fullName", false.toString())
+        val department = sharedPreferences.getString("departmentName", false.toString())
+        binding.fullNameTextView.text = fullName
+        binding.departmentNameTextView.text = department
+
         fetchDataFromApi()
 
         refreshApp()
@@ -60,20 +67,23 @@ class MainActivity : AppCompatActivity() {
 
     private fun refreshApp() {
         val swipeToRefresh:SwipeRefreshLayout = findViewById(R.id.swipeToRefresh)
+        val sharedPreferences: SharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE)
+        val department = sharedPreferences.getString("departmentName", false.toString())
         swipeToRefresh.setOnRefreshListener {
             fetchDataFromApi()
             swipeToRefresh.isRefreshing = false
         }
     }
-
     private fun fetchDataFromApi() {
+        val sharedPreferences: SharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE)
+        val department = sharedPreferences.getString("departmentName", false.toString())
         val apiService = ApiClient.ApiClient.apiService
-        val call = apiService.getPanggilanAmbulan()
+        val call = apiService.getPanggilan(department.toString())
 
-        call.enqueue(object : Callback<List<PanggilanAmbulan>> {
+        call.enqueue(object : Callback<List<Panggilan>> {
             override fun onResponse(
-                call: Call<List<PanggilanAmbulan>>,
-                response: Response<List<PanggilanAmbulan>>
+                call: Call<List<Panggilan>>,
+                response: Response<List<Panggilan>>
             ) {
                 if (response.isSuccessful) {
                     val panggilanList = response.body()
@@ -90,7 +100,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<List<PanggilanAmbulan>>, t: Throwable) {
+            override fun onFailure(call: Call<List<Panggilan>>, t: Throwable) {
                 // Error handling
                 Toast.makeText(
                     this@MainActivity,
