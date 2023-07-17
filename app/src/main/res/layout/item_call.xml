@@ -13,6 +13,12 @@
         android:textSize="16sp"
         android:textStyle="bold" />
     <TextView
+        android:id="@+id/latlongTextView"
+        android:text="Latlong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp" />
+    <TextView
         android:id="@+id/addressTextView"
         android:text="Address"
         android:layout_width="match_parent"
@@ -38,17 +44,17 @@
         android:layout_marginBottom="5dp"
         android:orientation="horizontal">
         <Button
+            android:id="@+id/mapsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:visibility="gone"
+            android:text="Open Maps" />
+        <Button
             android:id="@+id/acceptButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
             android:text="Terima"/>
-        <Button
-            android:id="@+id/rejectButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:text="Tolak"/>
     </LinearLayout>
     <View
         android:layout_width="match_parent"

@@ -1,12 +1,15 @@
 package com.kamilsudarmi.emergencyunit.adapter
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.kamilsudarmi.emergencyunit.R
 import com.kamilsudarmi.emergencyunit.api.ApiClient
@@ -17,7 +20,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PanggilanAdapter : RecyclerView.Adapter<PanggilanAdapter.PanggilanViewHolder>() {
+class PanggilanAdapter(private val context: Context) : RecyclerView.Adapter<PanggilanAdapter.PanggilanViewHolder>() {
 
     private val panggilanList: MutableList<Panggilan> = mutableListOf()
 
@@ -34,15 +37,48 @@ class PanggilanAdapter : RecyclerView.Adapter<PanggilanAdapter.PanggilanViewHold
 
         // Set teks tombol tergantung dari status call
         if (panggilan.status == "Pending") {
+            holder.mapsButton.visibility = View.GONE
             holder.acceptButton.setOnClickListener {
+                Toast.makeText(context, "You Accepted this task, please refresh..", Toast.LENGTH_SHORT).show()
                 updateCallStatus(panggilan.report_id.toString(), "Handled")
             }
+
             holder.acceptButton.text = "Accept"
         } else if (panggilan.status == "Handled") {
+            holder.mapsButton.visibility = View.VISIBLE
             holder.acceptButton.setOnClickListener {
+                Toast.makeText(context, "thank you for completing this task, please refresh..", Toast.LENGTH_SHORT).show()
                 updateCallStatus(panggilan.report_id.toString(), "Completed")
             }
             holder.acceptButton.text = "Complete"
+        }
+
+        holder.mapsButton.setOnClickListener {
+            val address = panggilan.address
+            val latLong = panggilan.latlong
+            if (panggilan.latlong == ""){
+                val gmIntentUri = Uri.parse("geo:0,0?q=$address")
+                Log.d("geo", "geo:0,0?q=$address")
+                val mapIntent = Intent(Intent.ACTION_VIEW, gmIntentUri)
+                mapIntent.setPackage("com.google.android.apps.maps")
+
+                if (mapIntent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(mapIntent)
+                } else {
+                    Toast.makeText(context, "Maps application is not installed", Toast.LENGTH_SHORT).show()
+                }
+            }else{
+                val gmIntentUri = Uri.parse("geo:0,0?q=$latLong")
+                Log.d("geo", "geo:0,0?q=$latLong")
+                val mapIntent = Intent(Intent.ACTION_VIEW, gmIntentUri)
+                mapIntent.setPackage("com.google.android.apps.maps")
+
+                if (mapIntent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(mapIntent)
+                } else {
+                    Toast.makeText(context, "Maps application is not installed", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -77,14 +113,17 @@ class PanggilanAdapter : RecyclerView.Adapter<PanggilanAdapter.PanggilanViewHold
 
     inner class PanggilanViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val nameTextView: TextView = itemView.findViewById(R.id.nameTextView)
-        private val addressTextView: TextView = itemView.findViewById(R.id.addressTextView)
+        val addressTextView: TextView = itemView.findViewById(R.id.addressTextView)
+        val latlongTextView: TextView = itemView.findViewById(R.id.latlongTextView)
         private val situationTextView: TextView = itemView.findViewById(R.id.situationTextView)
         private val statusTextView: TextView = itemView.findViewById(R.id.statusTextView)
         val acceptButton: Button = itemView.findViewById(R.id.acceptButton)
+        val mapsButton: Button = itemView.findViewById(R.id.mapsButton)
 
         fun bindData(panggilan: Panggilan) {
             nameTextView.text = "Name: ${panggilan.nama_pengguna}"
             addressTextView.text = "Address: ${panggilan.address}"
+            latlongTextView.text = "Latlong: ${panggilan.latlong}"
             situationTextView.text = "Situation: ${panggilan.situation}"
             statusTextView.text = "Status: ${panggilan.status}"
         }

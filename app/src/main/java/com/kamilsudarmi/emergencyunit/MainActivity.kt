@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.callRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        panggilanAdapter = PanggilanAdapter()
+        panggilanAdapter = PanggilanAdapter(this)
         recyclerView.adapter = panggilanAdapter
 
         val sharedPreferences: SharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE)
@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         binding.fullNameTextView.text = fullName
         binding.departmentNameTextView.text = department
 
+        binding.titleTextView.text = "Task List for $department"
         fetchDataFromApi()
 
         refreshApp()
