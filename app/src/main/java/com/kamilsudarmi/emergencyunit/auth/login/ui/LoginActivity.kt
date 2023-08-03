@@ -37,26 +37,17 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginMethod() {
-        // Mendapatkan input dari UI
         val username = binding.edtUsername.text.toString()
         val password = binding.edtPassword.text.toString()
 
-        // Membuat objek loginModel
         val loginRequest = LoginRequest(username, password)
-
         Log.d("logininfo", "loginMethod: $username , $password")
 
-        // Memanggil metode login pada ApiService
         val call = ApiClient.ApiClient.apiService.login(loginRequest)
         call.enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 if (response.code() == 200) {
-                    // Respons berhasil
                     val loginResponse = response.body()
-                    val token = loginResponse?.message
-                    val user = loginResponse?.user
-
-                    // Simpan status login sebagai true di SharedPreferences
                     val sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE)
                     val editor = sharedPreferences.edit()
                     editor.putBoolean("isLoggedIn", true)
@@ -66,17 +57,16 @@ class LoginActivity : AppCompatActivity() {
                     editor.putString("departmentName", loginResponse?.user?.department_name)
                     editor.apply()
 
-                    // Arahkan pengguna ke MainActivity atau tampilan utama lainnya
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(intent)
-                    finish() // Optional: Tutup LoginActivity agar pengguna tidak dapat kembali ke sini setelah login
+                    finish()
                 } else {
                     val errorResponse = response.errorBody()?.string()
                     val errorMessage = try {
                         val errorJson = JSONObject(errorResponse)
                         errorJson.getString("error")
                     } catch (e: JSONException) {
-                        "Terjadi kesalahan. Silakan coba lagi."
+                        "There is an error. Please try again."
                     }
                     runOnUiThread {
                         Toast.makeText(this@LoginActivity, errorMessage, Toast.LENGTH_SHORT).show()

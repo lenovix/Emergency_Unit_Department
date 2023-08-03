@@ -15,48 +15,46 @@ import com.kamilsudarmi.emergencyunit.R
 import com.kamilsudarmi.emergencyunit.api.ApiClient
 import com.kamilsudarmi.emergencyunit.api.request.CallStatusRequest
 import com.kamilsudarmi.emergencyunit.api.response.CallStatusResponse
-import com.kamilsudarmi.emergencyunit.api.response.Panggilan
+import com.kamilsudarmi.emergencyunit.api.response.Calling
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PanggilanAdapter(private val context: Context) : RecyclerView.Adapter<PanggilanAdapter.PanggilanViewHolder>() {
+class CallingAdapter(private val context: Context) : RecyclerView.Adapter<CallingAdapter.CallingViewHolder>() {
 
-    private val panggilanList: MutableList<Panggilan> = mutableListOf()
+    private val callingList: MutableList<Calling> = mutableListOf()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PanggilanViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CallingViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
             R.layout.item_call, parent, false
         )
-        return PanggilanViewHolder(view)
+        return CallingViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: PanggilanViewHolder, position: Int) {
-        val panggilan = panggilanList[position]
-        holder.bindData(panggilan)
+    override fun onBindViewHolder(holder: CallingViewHolder, position: Int) {
+        val calling = callingList[position]
+        holder.bindData(calling)
 
-        // Set teks tombol tergantung dari status call
-        if (panggilan.status == "Pending") {
+        if (calling.status == "Pending") {
             holder.mapsButton.visibility = View.GONE
+            holder.acceptButton.text = "Accept"
             holder.acceptButton.setOnClickListener {
                 Toast.makeText(context, "You Accepted this task, please refresh..", Toast.LENGTH_SHORT).show()
-                updateCallStatus(panggilan.report_id.toString(), "Handled")
+                updateCallStatus(calling.report_id.toString(), "Handled")
             }
-
-            holder.acceptButton.text = "Accept"
-        } else if (panggilan.status == "Handled") {
+        } else if (calling.status == "Handled") {
             holder.mapsButton.visibility = View.VISIBLE
+            holder.acceptButton.text = "Complete"
             holder.acceptButton.setOnClickListener {
                 Toast.makeText(context, "thank you for completing this task, please refresh..", Toast.LENGTH_SHORT).show()
-                updateCallStatus(panggilan.report_id.toString(), "Completed")
+                updateCallStatus(calling.report_id.toString(), "Completed")
             }
-            holder.acceptButton.text = "Complete"
         }
 
         holder.mapsButton.setOnClickListener {
-            val address = panggilan.address
-            val latLong = panggilan.latlong
-            if (panggilan.latlong == ""){
+            val address = calling.address
+            val latLong = calling.latlong
+            if (calling.latlong == ""){
                 val gmIntentUri = Uri.parse("geo:0,0?q=$address")
                 Log.d("geo", "geo:0,0?q=$address")
                 val mapIntent = Intent(Intent.ACTION_VIEW, gmIntentUri)
@@ -102,30 +100,30 @@ class PanggilanAdapter(private val context: Context) : RecyclerView.Adapter<Pang
     }
 
     override fun getItemCount(): Int {
-        return panggilanList.size
+        return callingList.size
     }
 
-    fun setData(data: List<Panggilan>) {
-        panggilanList.clear()
-        panggilanList.addAll(data)
+    fun setData(data: List<Calling>) {
+        callingList.clear()
+        callingList.addAll(data)
         notifyDataSetChanged()
     }
 
-    inner class PanggilanViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class CallingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val nameTextView: TextView = itemView.findViewById(R.id.nameTextView)
-        val addressTextView: TextView = itemView.findViewById(R.id.addressTextView)
-        val latlongTextView: TextView = itemView.findViewById(R.id.latlongTextView)
+        private val addressTextView: TextView = itemView.findViewById(R.id.addressTextView)
+        private val latLongTextView: TextView = itemView.findViewById(R.id.latlongTextView)
         private val situationTextView: TextView = itemView.findViewById(R.id.situationTextView)
         private val statusTextView: TextView = itemView.findViewById(R.id.statusTextView)
         val acceptButton: Button = itemView.findViewById(R.id.acceptButton)
         val mapsButton: Button = itemView.findViewById(R.id.mapsButton)
 
-        fun bindData(panggilan: Panggilan) {
-            nameTextView.text = "Name: ${panggilan.nama_pengguna}"
-            addressTextView.text = "Address: ${panggilan.address}"
-            latlongTextView.text = "Latlong: ${panggilan.latlong}"
-            situationTextView.text = "Situation: ${panggilan.situation}"
-            statusTextView.text = "Status: ${panggilan.status}"
+        fun bindData(calling: Calling) {
+            nameTextView.text = "Name: ${calling.nama_pengguna}"
+            addressTextView.text = "Address: ${calling.address}"
+            latLongTextView.text = "Lat-long: ${calling.latlong}"
+            situationTextView.text = "Situation: ${calling.situation}"
+            statusTextView.text = "Status: ${calling.status}"
         }
     }
 }

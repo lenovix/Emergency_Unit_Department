@@ -1,6 +1,6 @@
 package com.kamilsudarmi.emergencyunit.api.response
 
-data class Panggilan(
+data class Calling(
     val report_id: Int,
     val user_id: Int,
     val address: String,
