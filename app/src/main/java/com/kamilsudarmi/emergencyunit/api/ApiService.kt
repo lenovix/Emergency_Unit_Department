@@ -1,6 +1,6 @@
 package com.kamilsudarmi.emergencyunit.api
 
-import com.kamilsudarmi.emergencyunit.api.response.Panggilan
+import com.kamilsudarmi.emergencyunit.api.response.Calling
 import com.kamilsudarmi.emergencyunit.api.request.CallStatusRequest
 import com.kamilsudarmi.emergencyunit.api.response.CallStatusResponse
 import com.kamilsudarmi.emergencyunit.auth.login.model.LoginRequest
@@ -21,7 +21,7 @@ interface ApiService {
     @GET("/panggilan/{department}")
     fun getPanggilan(
         @Path("department") department: String
-    ): Call<List<Panggilan>>
+    ): Call<List<Calling>>
     @PUT("/calls/{report_id}")
     fun updateCallStatus(@Path("report_id") reportId: String, @Body body: CallStatusRequest): Call<CallStatusResponse>
 

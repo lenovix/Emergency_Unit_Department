@@ -4,14 +4,6 @@ data class LoginResponse(
     val message: String,
     val user: User
 )
-
-//data class User(
-//    val user_id: String,
-//    val name: String,
-//    val email: String,
-//    val password: String
-//)
-
 data class User(
     val id: Int,
     val full_name: String,

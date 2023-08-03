@@ -36,35 +36,28 @@ class RegisterActivity : AppCompatActivity() {
         if (selectedDepartmentId != -1) {
             val selectedRadioButton = binding.departmentRadioGroup.findViewById<RadioButton>(selectedDepartmentId)
             val selectedDepartment = selectedRadioButton.text.toString()
-
-            // Kirim data registrasi ke API
             registerUser(fullName, username, password, selectedDepartment)
         } else {
-            // Tampilkan pesan kesalahan jika tidak ada departemen yang dipilih
-            Toast.makeText(this, "Pilih departemen terlebih dahulu", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Choose a department first", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun registerUser(fullName: String, username: String, password: String, selectedDepartment: String) {
-        // Kirim permintaan registrasi pengguna ke API
         val call = apiService.registerUser(fullName, username, password, selectedDepartment)
         call.enqueue(object : Callback<RegistrationResponse> {
             override fun onResponse(call: Call<RegistrationResponse>, response: Response<RegistrationResponse>) {
                 if (response.isSuccessful) {
-                    val registrationResponse = response.body()
-                    // Lakukan sesuatu dengan respon dari API
-                    Toast.makeText(this@RegisterActivity, "Registrasi berhasil", Toast.LENGTH_SHORT).show()
-                    // Tambahkan kode untuk berpindah ke halaman lain setelah registrasi berhasil
+                    Toast.makeText(this@RegisterActivity, "Registration successful", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
                     startActivity(intent)
                     finish()
                 } else {
-                    Toast.makeText(this@RegisterActivity, "Registrasi gagal", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@RegisterActivity, "Registration failed", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<RegistrationResponse>, t: Throwable) {
-                Toast.makeText(this@RegisterActivity, "Registrasi gagal", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@RegisterActivity, "Registration failed", Toast.LENGTH_SHORT).show()
             }
         })
     }

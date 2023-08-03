@@ -10,9 +10,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.kamilsudarmi.emergencyunit.adapter.PanggilanAdapter
+import com.kamilsudarmi.emergencyunit.adapter.CallingAdapter
 import com.kamilsudarmi.emergencyunit.api.ApiClient
-import com.kamilsudarmi.emergencyunit.api.response.Panggilan
+import com.kamilsudarmi.emergencyunit.api.response.Calling
 import com.kamilsudarmi.emergencyunit.auth.login.ui.LoginActivity
 import com.kamilsudarmi.emergencyunit.databinding.ActivityMainBinding
 import retrofit2.Call
@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var toolbar: Toolbar
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var panggilanAdapter: PanggilanAdapter
+    private lateinit var callingAdapter: CallingAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,16 +34,13 @@ class MainActivity : AppCompatActivity() {
 
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.apply {
-            title = "Nama Aplikasi" // Ganti dengan judul aplikasi Anda
-        }
 
         checkLoginStatus()
 
         recyclerView = findViewById(R.id.callRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        panggilanAdapter = PanggilanAdapter(this)
-        recyclerView.adapter = panggilanAdapter
+        callingAdapter = CallingAdapter(this)
+        recyclerView.adapter = callingAdapter
 
         val sharedPreferences: SharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE)
         val fullName = sharedPreferences.getString("fullName", false.toString())
@@ -89,15 +86,15 @@ class MainActivity : AppCompatActivity() {
         val apiService = ApiClient.ApiClient.apiService
         val call = apiService.getPanggilan(department.toString())
 
-        call.enqueue(object : Callback<List<Panggilan>> {
+        call.enqueue(object : Callback<List<Calling>> {
             override fun onResponse(
-                call: Call<List<Panggilan>>,
-                response: Response<List<Panggilan>>
+                call: Call<List<Calling>>,
+                response: Response<List<Calling>>
             ) {
                 if (response.isSuccessful) {
                     val panggilanList = response.body()
                     panggilanList?.let {
-                        panggilanAdapter.setData(it)
+                        callingAdapter.setData(it)
                     }
                 } else {
                     // Error handling
@@ -109,7 +106,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<List<Panggilan>>, t: Throwable) {
+            override fun onFailure(call: Call<List<Calling>>, t: Throwable) {
                 // Error handling
                 Toast.makeText(
                     this@MainActivity,
